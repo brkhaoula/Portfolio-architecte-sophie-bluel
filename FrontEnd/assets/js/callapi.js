@@ -1,20 +1,47 @@
-//function to get works from API
-//
-function get_works(){
-const options = {
-    method: 'GET',
-  
-    headers: {
-      // Nous n'accepterons que le JSON en résultat.
-      'Accept': 'application/json',
-      // Dans le cas d'une requête contenant un body,
-      // par exemple une POST ou PUT, on définit le format du body.
-      'Content-Type': 'application/json',
-      // Cas d'usage courant pour gérer l'authentification avec une API REST.
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY3NDU2NzY3NiwiZXhwIjoxNjc0NjU0MDc2fQ.XqX6dio4RG-OqTFsdisESwqof4mc0OW9d_j7o3eBzG8'
+get_category();
+get_works();
+
+//response API to get category
+function get_category() {
+  const url2 = 'http://localhost:5678/api/categories';
+  fetch(url2)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      const fragment = document.createDocumentFragment();
+      let categoryies = data;
+      localStorage.setItem('categoryies', JSON.stringify(data));
+      categoryies.forEach((category) => {
+        const link = document.createElement('a');
+        link.textContent = category.name;
+        link.onclick = function () {
+          findWorksBycategory(category.id);
+          link.className.replace('active', '');
+        };
+        link.classList.add("subcat");
+        fragment.appendChild(link);
+      });
+      const categorie = document.getElementById('category');
+      categorie.appendChild(fragment);
+    })
+}
+
+function findWorksBycategory(id) {
+  const works = JSON.parse(localStorage.getItem('worksedit'));
+  let worksList = [];
+
+  works.forEach((work) => {
+    if (work.categoryId == id) {
+      worksList.push(work);
+     
     }
-  }
-  
+  });
+  console.log(worksList);
+  createDocumentWorks(worksList);
+}
+
+function get_works() {
   const url = 'http://localhost:5678/api/works';
 
   fetch(url)
@@ -24,105 +51,164 @@ const options = {
     .then((data) => {
       const fragment = document.createDocumentFragment();
       let works = data;
-      works.forEach((work) => {
-        console.log(work);
-        const figure = document.createElement('figure');
-        const div = document.createElement('div');
-        const img = document.createElement('img');
-        img.src=work.imageUrl;
-        const caption = document.createElement('figcaption');
-        caption.textContent = work.title;
-        fragment.appendChild(figure);
-        figure.appendChild(div);
-        div.appendChild(img);
-       
-        console.log(work.imageUrl);
-       
-        div.appendChild(caption);
-        
-    });
-    const gallery = document.getElementById('galleryworks');
-    gallery.appendChild(fragment);
-  })
-}
-//response API to get category
-function get_category(){
-  const options = {
-      method: 'GET',
-    
-      headers: {
-        // Nous n'accepterons que le JSON en résultat.
-        'Accept': 'application/json',
-        // Dans le cas d'une requête contenant un body,
-        // par exemple une POST ou PUT, on définit le format du body.
-        'Content-Type': 'application/json',
-        // Cas d'usage courant pour gérer l'authentification avec une API REST.
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY3NDU2NzY3NiwiZXhwIjoxNjc0NjU0MDc2fQ.XqX6dio4RG-OqTFsdisESwqof4mc0OW9d_j7o3eBzG8'
-      }
-    }
-    const url2 = 'http://localhost:5678/api/categories';
-    fetch(url2)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        const fragment = document.createDocumentFragment();
-        let categoryies = data;
-        categoryies.forEach((category) => {
-          console.log(category);
-          const link = document.createElement('a');
-          link.textContent = category.name;
-          link.classList.add("subcat");
-          fragment.appendChild(link);
-          
-      });
-      const categorie = document.getElementById('category');
-      categorie.appendChild(fragment);
+      localStorage.setItem('worksedit', JSON.stringify(data));
+      createDocumentWorks(works);
     })
-  } 
-  //
-//function login connexion authentification
-//affichage page d'acceuil
-//sinon affichage message d'erreur
-function login()
-{
-
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const xhttp = new XMLHttpRequest();
-  xhttp.open("POST", "http://localhost:5678/api/users/login");
-  xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  xhttp.send(JSON.stringify({
-    "email": email,
-    "password": password
-  }));
-  xhttp.onreadystatechange = function () {
-    if (this.readyState == 4) {
-      const objects = JSON.parse(this.responseText);
-      if (objects['status'] == 'ok') {
-        localStorage.setItem("jwt", objects['accessToken']);
-        Swal.fire({
-          text: objects['message'],
-          icon: 'success',
-          confirmButtonText: 'OK'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = './index.html';
-          }
-        });
-      } else {
-        Swal.fire({
-          text: objects['message'],
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-      }
-    }
-  };
-  return false;
 }
 
+function createDocumentWorks(works) {
+  const fragment = document.createDocumentFragment();
+  const gallery = document.getElementById('galleryworks');
+  gallery.innerHTML='';
+  works.forEach((work) => {
+    const figure = document.createElement('figure');
+    const div = document.createElement('div');
+    const img = document.createElement('img');
+    img.src = work.imageUrl;
+    img.crossOrigin = 'anonymous';
+    const caption = document.createElement('figcaption');
+    caption.textContent = work.title;
+    fragment.appendChild(figure);
+    figure.appendChild(div);
+    div.appendChild(img);
+    div.appendChild(caption);
+  });
+  gallery.appendChild(fragment);
+  
+}
 
-get_works();
-get_category();
+function updateWorks() {
+  showModal('worksModal');
+
+  const fragment = document.createDocumentFragment();
+  const galleryEdit = document.getElementById('gallery_edit');
+  galleryEdit.innerHTML='';
+
+  const works = JSON.parse(localStorage.getItem('worksedit'));
+
+  works.forEach((work) => {
+    const div = document.createElement('div');
+    div.id = "gallery_edit_img";
+
+    const img = document.createElement('img');
+    img.src = work.imageUrl;
+    img.crossOrigin = 'anonymous';
+    div.appendChild(img);
+
+    const i = document.createElement('i');
+    i.setAttribute("class", "fa fa-trash");
+    i.setAttribute("data-id", work.id);
+    i.setAttribute("onclick", "deleteWork(this, " + work.id + ")");
+    div.appendChild(i);
+
+    const p = document.createElement('p');
+    p.textContent = 'éditer';
+    p.setAttribute("data-id", work.id);
+    div.appendChild(p);
+
+    fragment.appendChild(div);
+  });
+  
+  galleryEdit.appendChild(fragment);
+}
+
+function newWork() {
+  closeModal();
+  const categoryies = JSON.parse(localStorage.getItem('categoryies'));
+
+  let categoryiesOptionHtml = '<option value="">--Veuillez choisir une catégorie--</option>';
+  categoryies.forEach((category) => {
+    categoryiesOptionHtml += '<option value=' + category['id'] + '>' + category['name'] + '</option>';
+  });
+
+  document.getElementById('categories_select').innerHTML = categoryiesOptionHtml;
+
+  showModal('newWorkModal');
+}
+
+function getAuthorization() {
+  const token = JSON.parse(localStorage.getItem('auth')).token;
+  return 'Bearer ' + token;
+}
+
+function addWork() {
+
+  const formData = new FormData();
+
+  const titre = document.querySelector("#titre").value;
+  const categorie = document.querySelector("#categories_select").value;
+  const fileField = document.querySelector('input[type="file"]');
+
+  formData.append('title', titre);
+  formData.append('category', categorie);
+  formData.append('image', fileField.files[0]);
+
+  const url = 'http://localhost:5678/api/works';
+  const userId = JSON.parse(localStorage.getItem('auth')).userId;
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      'Authorization': getAuthorization()
+    },
+    auth: {
+      'userId': userId
+    },
+    body: formData,
+    file: {
+      'filename': fileField.files[0]
+    }
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const listWorks = JSON.parse(localStorage.getItem('worksedit'));
+      listWorks.push(data);
+      localStorage.setItem('worksedit', JSON.stringify(listWorks));
+      closeModal();
+      updateWorks();
+
+      const alert = document.getElementById('alert');
+      alert.innerHTML = "Votre photo a été ajouté avec succès";
+      alert.style.display = "block";
+      setTimeout(function(){ alert.style.display = "none"; }, 3000);
+
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  ;
+}
+
+function deleteWork(event, id) {
+  fetch('http://localhost:5678/api/works/' + id, {
+    method: 'DELETE',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': getAuthorization()
+    },
+    params: {
+      'id': id
+    },
+  })
+    
+    .then(() => {
+     const parentDiv = event.parentNode;
+     parentDiv.remove();
+      const alert = document.getElementById('alert');
+      alert.innerHTML = "Votre photo a été supprimé avec succès";
+      alert.style.display = "block";
+      setTimeout(function(){ alert.style.display = "none"; }, 3000);
+
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  ;
+}
+
+function deleteAllWorks() {
+
+
+}
+

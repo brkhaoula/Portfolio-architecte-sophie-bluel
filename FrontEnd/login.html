@@ -11,17 +11,17 @@
 		rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script src="assets/js/callapi.js"></script>
+	
 </head>
 
 <body>
 	<header>
 		<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
 		<nav>
-			<ul class="menu">
-				<li >projets</li>
-				<li >contact</li>
-				<li ><a href="login.html" class="submenu">login</a></li>
+			<ul>
+				<li> <a href="index.html" class="submenu">projets</a></li>
+				<li><a href="#contact" class="submenu">contact </a></li>
+				<li ><a href="login.html" class="submenu" id="login">login</a></li>
 				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 			</ul>
 		</nav>
@@ -31,14 +31,14 @@
             <div class="login-page">
                 <h1>log in</h1>
                 <div class="form">
-                  <form class="login-form" onsubmit="return login()" id="login-form">
+                  <form class="login-form"  id="login-form"   enctype='multipart/form-data' method="post">
                     <div><label>Email</label>
-                    <input type="Email" id="email" value="dfdfd"/></div>
+                    <input type="Email" id="email" /></div>
                     <div><label>Mot de passe</label>
                     <input type="password"  id="password"/></div>
-                    <div><button id="connexion" type="submit" id="submit">se connecter</button></div>
+                    <div><button id="connexion" type="button" onclick="login()">se connecter</button></div>
                     <div><a href="#">Mot de passe oublié</a></div>
-                    <p></p>
+                    <p  id="form-messages"></p>
                   </form>
                 </div>
               </div>
@@ -53,5 +53,6 @@
 		</nav>
 	</footer>
 </body>
-
+<script src="assets/js/login.js"></script>
+<script src="assets/js/main.js"></script>
 </html>
