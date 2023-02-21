@@ -13,6 +13,7 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="./assets/style.css">
 
+	<script src="assets/js/main.js"></script>
 </head>
 <style>
 	header {
@@ -20,23 +21,35 @@
 		justify-content: space-between;
 		margin: -1px 0;
 		flex-wrap: wrap;
+		width: 100%;
 	}
 </style>
 
 <body>
 	<header>
-		<div class="bar">
-			<section class="publish_bar">
-		<img src="../FrontEnd/assets/images/icone-modif.png">
-		<p class="text-modif">modifier</p>
-	<button class="publish">publier les changements</button></div></section>
+		<script> 
+			if ( checkLogin() == true ) {  
+				document.querySelector("header").innerHTML ='<div class="bar"><section class="publish_bar"><img src="../FrontEnd/assets/images/icone-modif.png"><p class="text-modif">Mode édition</p><button class="publish">publier les changements</button></section></div>';
+			} else { 
+				document.querySelector("header").innerHTML ='';
+			} 
+			</script>
+		
 		
 			<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
 		<nav>
 			<ul>
 				<li><a href="index.html" class="submenu">projets</a></li>
 				<li><a href="#contact" class="submenu">contact </a></li>
-				<li><a href="login.html" id="login" class="submenu">login</a></li>
+				<li id="login_logout">
+					<script> 
+					if ( checkLogin() == false ) {  
+						document.querySelector("#login_logout").innerHTML ='<a href="login.html" id="login" class="submenu">login</a>';
+					} else { 
+						document.querySelector("#login_logout").innerHTML ='<a href="#" id="logout" class="submenu" onclick="logout()">logout</a>';
+					} 
+					</script>
+				</li>
 				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 			</ul>
 		</nav>
@@ -60,9 +73,14 @@
 		<section id="portfolio">
 			<div class="edit">
 				<h2>Mes Projets</h2>
-				<div class="editaction"><i class="fas fa-edit"></i>
+				<div class="editaction">
 					<!-- Trigger/Open The Modal -->
-					<button id="#worksModal" onclick="updateWorks();" class="modif_button">modifier</button>
+					<script> 
+						if ( checkLogin() == true ) {  
+							document.querySelector(".editaction").innerHTML ='<i class="fas fa-edit"></i><button id="#worksModal" onclick="updateWorks();" class="modif_button">modifier</button>';
+						}
+						</script>
+					
 				</div>
 			</div>
 
@@ -76,7 +94,7 @@
 					<h1 class="title">Galerie photo</h1>
 					<div>
 						<div id="alert" class="alert alert-success" role="alert">
-							fffffffffffffff fff ggggggggggggg
+							
 						</div>
 					</div>
 					<div id="gallery_edit">
@@ -149,7 +167,6 @@
 	<script src="assets/js/callapi.js"></script>
 	<script src="assets/js/modal.js"></script>
 	<script src="assets/js/edit.js"></script>
-	<script src="assets/js/main.js"></script>
 </body>
 
 </html>
