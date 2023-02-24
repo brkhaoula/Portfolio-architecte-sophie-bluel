@@ -16,8 +16,7 @@ function get_category() {
         const link = document.createElement('a');
         link.textContent = category.name;
         link.onclick = function () {
-          findWorksBycategory(category.id);
-          link.className.replace('active', '');
+          findWorksBycategory(this, category.id);
         };
         link.classList.add("subcat");
         fragment.appendChild(link);
@@ -27,17 +26,25 @@ function get_category() {
     })
 }
 
-function findWorksBycategory(id) {
+function findWorksBycategory(event, id = null) {
   const works = JSON.parse(localStorage.getItem('worksedit'));
   let worksList = [];
 
-  works.forEach((work) => {
-    if (work.categoryId == id) {
-      worksList.push(work);
-     
-    }
+  if (id !== null) {
+    works.forEach((work) => {
+      if (work.categoryId == id) {
+        worksList.push(work);
+      }
+    });
+  } else {
+    worksList = works;
+  }
+  
+  const elements = document.querySelectorAll(".subcat");
+  elements.forEach((element) => {
+  element.classList.remove("active");
   });
-  console.log(worksList);
+  event.classList.add("active");
   createDocumentWorks(worksList);
 }
 
@@ -59,7 +66,7 @@ function get_works() {
 function createDocumentWorks(works) {
   const fragment = document.createDocumentFragment();
   const gallery = document.getElementById('galleryworks');
-  gallery.innerHTML='';
+  gallery.innerHTML = '';
   works.forEach((work) => {
     const figure = document.createElement('figure');
     const div = document.createElement('div');
@@ -74,7 +81,7 @@ function createDocumentWorks(works) {
     div.appendChild(caption);
   });
   gallery.appendChild(fragment);
-  
+
 }
 
 function updateWorks() {
@@ -82,7 +89,7 @@ function updateWorks() {
 
   const fragment = document.createDocumentFragment();
   const galleryEdit = document.getElementById('gallery_edit');
-  galleryEdit.innerHTML='';
+  galleryEdit.innerHTML = '';
 
   const works = JSON.parse(localStorage.getItem('worksedit'));
 
@@ -108,7 +115,7 @@ function updateWorks() {
 
     fragment.appendChild(div);
   });
-  
+
   galleryEdit.appendChild(fragment);
 }
 
@@ -138,6 +145,14 @@ function addWork() {
   const titre = document.querySelector("#titre").value;
   const categorie = document.querySelector("#categories_select").value;
   const fileField = document.querySelector('input[type="file"]');
+
+  if (fileField.files[0] == undefined) {
+    const alert = document.getElementById('message_alert');
+    alert.innerHTML = "veuillez inserer l'image du projet";
+    alert.style.display = "block";
+    setTimeout(function () { alert.style.display = "none"; }, 3000);
+    return false;
+  }
 
   formData.append('title', titre);
   formData.append('category', categorie);
@@ -170,7 +185,7 @@ function addWork() {
       const alert = document.getElementById('alert');
       alert.innerHTML = "Votre photo a été ajouté avec succès";
       alert.style.display = "block";
-      setTimeout(function(){ alert.style.display = "none"; }, 3000);
+      setTimeout(function () { alert.style.display = "none"; }, 3000);
 
     })
     .catch((error) => {
@@ -191,14 +206,14 @@ function deleteWork(event, id) {
       'id': id
     },
   })
-    
+
     .then(() => {
-     const parentDiv = event.parentNode;
-     parentDiv.remove();
+      const parentDiv = event.parentNode;
+      parentDiv.remove();
       const alert = document.getElementById('alert');
       alert.innerHTML = "Votre photo a été supprimé avec succès";
       alert.style.display = "block";
-      setTimeout(function(){ alert.style.display = "none"; }, 3000);
+      setTimeout(function () { alert.style.display = "none"; }, 3000);
 
     })
     .catch((error) => {

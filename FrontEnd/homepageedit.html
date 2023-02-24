@@ -113,13 +113,18 @@
 					<span class="return" onclick="precedant()">&larr;</span>
 
 					<h1 class="title">Ajout photo</h1>
+					<div>
+						<div id="message_alert" class="alert alert-error" role="alert">
+							
+						</div>
+					</div>
 					<form id="formNewWork" method="post" enctype="multipart/form-data">
 						<div class="file">
 							<img src="../FrontEnd/assets/images/Group.png" class="file_img" />
 							<label for="file" class="label_file">
 								<p class="button_file">+ Ajouter photo</p>
 							</label>
-							<input type="file" accept=".jpg,.gif,.png" multiple class="add_btn" id="img_edit">
+							<input type="file" accept=".jpg,.gif,.png" multiple class="add_btn" id="img_edit" required>
 							<p class="accept-file">jpg, png : 4mo max</p>
 						</div>
 						<div class="titre">
@@ -136,6 +141,7 @@
 						<div class="action">
 							<button class="edit_button" type="button" onclick="addWork()">Valider</button>
 						</div>
+					
 					</form>
 				</div>
 			</div>

@@ -24,11 +24,19 @@ function login() {
     })
       .then((response) => response.json())
       .then((data) => {
-        
-        localStorage.setItem('auth', JSON.stringify(data));
-        
-        window.location = "homepageedit.html";
-        
+        console.log(data);
+        if ((data.error) || (data.message)) {
+          const alert = document.getElementById('alert');
+          alert.innerHTML = "Veuillez verifier votre email ou votre mot de passe";
+          alert.style.display = "block";
+          setTimeout(function () { alert.style.display = "none"; }, 30000);
+         
+        } else {
+          localStorage.setItem('auth', JSON.stringify(data));
+          window.location = "homepageedit.html";
+        }
+
+
       })
       .catch((error) => {
         console.error('Error:', error);
